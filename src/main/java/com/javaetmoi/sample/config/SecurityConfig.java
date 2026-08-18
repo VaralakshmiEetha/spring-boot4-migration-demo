@@ -28,7 +28,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 
 @Configuration
@@ -41,7 +40,7 @@ public class SecurityConfig {
         // to customize with your own authentication provider
         auth
       .inMemoryAuthentication()
-        .withUser("user").password("password").roles("USER");
+        .withUser("user").password("{noop}password").roles("USER");
     }
 
     @Bean
@@ -54,13 +53,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
           .authorizeHttpRequests((authz) -> authz
-            .requestMatchers("/signup","/about").permitAll()
+            .requestMatchers("/signup", "/about").permitAll()
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated())
-        .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll()
-        );
+        .formLogin(form -> form.permitAll());
         return http.build();
     }
 
@@ -84,10 +80,5 @@ public class SecurityConfig {
             }
         }
        return null;
-    }
-
-    @Bean
-    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-        return new HandlerMappingIntrospector();
     }
 }
