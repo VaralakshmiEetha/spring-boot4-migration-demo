@@ -1,11 +1,11 @@
 /**
  * Copyright 2014-2017 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -15,11 +15,7 @@ package com.javaetmoi.sample.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -29,20 +25,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
-@EnableAsync
 @EnableScheduling
 @EnableAspectJAutoProxy
 @EnableCaching
 @ComponentScan(basePackages = { "com.javaetmoi.sample.service" })
-public class ServiceConfig implements AsyncConfigurer {
-    
-    private final Logger log = LoggerFactory.getLogger(ServiceConfig.class);
+public class ServiceConfig {
 
     @Bean
     public CacheManager cacheManager() {
@@ -60,27 +50,5 @@ public class ServiceConfig implements AsyncConfigurer {
         cacheFactoryBean.setName("default");
         cacheFactoryBean.afterPropertiesSet();
         return cacheFactoryBean.getObject();
-
     }
-
-    @Override
-    public Executor getAsyncExecutor() {
-        log.debug("Creating Async Task Executor");
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        // to customize with your requirements
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(40);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("MyExecutor-");
-        executor.initialize();
-        return executor;
-    }
-
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        // You may customize the handler that manages exceptions thrown during an asynchronous method execution
-        // See http://www.concretepage.com/spring-4/spring-4-async-exception-handling-with-asyncuncaughtexceptionhandler
-        return null;
-    }
-
 }

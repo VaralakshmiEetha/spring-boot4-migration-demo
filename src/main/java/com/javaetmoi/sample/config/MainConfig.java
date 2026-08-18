@@ -26,11 +26,12 @@ import org.springframework.core.env.Environment;
  * Configuration of the business, persistence and security layers.  
  */
 @Configuration
-@Import(value = { 
+@Import(value = {
         DataSourceConfig.class,
         InfrastructureConfig.class,
         RepositoryConfig.class,
         ServiceConfig.class,
+        AsyncConfig.class,
         SecurityConfig.class
 } )
 public class MainConfig {
